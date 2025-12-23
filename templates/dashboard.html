@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin:0;
+            padding:0;
+        }
+        
+        header {
+            background-color: #3c8d99;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .buttons-container {
+            margin: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .exercise-btn {
+            background-color: #3c8d99;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .exercise-btn:hover {
+            background-color: #2a6d75;
+        }
+
+        
+
+        .exercise-btn:hover, .start-btn:hover, .logout-btn:hover {
+            background-color: #2a6d75;
+        }
+        
+        .table-container {
+            display: none;
+            margin: 20px auto;
+            width: 90%;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .exercise-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .exercise-table th, .exercise-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .exercise-table th {
+            background-color: #3c8d99;
+            color: white;
+        }
+        
+        .exercise-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+     
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .start-btn, .logout-btn {
+            background-color: #3c8d99;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            width:10rem;
+        }
+        
+        .flash-messages {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 400px;
+            z-index: 1000;
+        }
+        
+        .flash-message {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            opacity: 0;
+            animation: fadeInOut 5s ease forwards; /* Automatically fades out */
+        }
+        
+        .flash-message.success {
+            background-color: #28a745; /* Green for success */
+        }
+        
+        .flash-message.danger {
+            background-color: #dc3545; /* Red for error */
+        }
+        
+        
+        .start-btn:hover {
+            background-color: #2a6d75;
+        }
+        
+        .logout-btn:hover {
+            background-color: #d9534f;
+        }
+        
+        
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>Welcome to Your Fitness Tracker, {{username}}</h2>
+    </header>
+
+    <!-- Flash Messages Section -->
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="buttons-container">
+        <button class="exercise-btn" onclick="showTable('pushups')">Pushups</button>
+        <button class="exercise-btn" onclick="showTable('squats')">Squats</button>
+        <button class="exercise-btn" onclick="showTable('planks')">Planks</button>
+        <button class="exercise-btn" onclick="showTable('lunges')">Lunges</button>
+        <button class="exercise-btn" onclick="showTable('pullups')">Pullups</button>
+        
+    </div>
+
+    <!-- Pushups Log Table -->
+    <div class="table-container" id="pushups-table">
+        <table class="exercise-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Reps</th>
+                    <th>Sets</th>
+                    <th>Duration (sec)</th>
+                    <th>Difficulty</th>
+                    <th>Rest Period (sec)</th>
+                    <th>Calories Burned</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in workout_logs['pushups'] %}
+                <tr>
+                    <td>{{ log.date }}</td>
+                    <td>{{ log.reps }}</td>
+                    <td>{{ log.sets }}</td>
+                    <td>{{ log.duration }}</td>
+                    <td>{{ log.difficulty }}</td>
+                    <td>{{ log.rest_period }}</td>
+                    <td>{{ log.calories_burned }}</td>
+                    <td>{{ log.form_notes }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Squats Log Table -->
+    <div class="table-container" id="squats-table">
+        <table class="exercise-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Reps</th>
+                    <th>Sets</th>
+                    <th>Duration (sec)</th>
+                    <th>Weight (kg)</th>
+                    <th>Calories Burned</th>
+                    <th>Rest Period (sec)</th>
+                    <th>Depth</th>
+                    <th>Form Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in workout_logs['squats'] %}
+                <tr>
+                    <td>{{ log.date }}</td>
+                    <td>{{ log.reps }}</td>
+                    <td>{{ log.sets }}</td>
+                    <td>{{ log.duration }}</td>
+                    <td>{{ log.weight }}</td>
+                    <td>{{ log.calories_burned }}</td>
+                    <td>{{ log.rest_period }}</td>
+                    <td>{{ log.depth }}</td>
+                    <td>{{ log.form_notes }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+
+    <!-- Planks Log Table -->
+    <div class="table-container" id="planks-table">
+        <table class="exercise-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Duration (sec)</th>
+                    <th>Stage</th>
+                    <th>Rest Period (sec)</th>
+                    <th>Calories Burned</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in workout_logs['planks'] %}
+                <tr>
+                    <td>{{ log.date.strftime('%Y-%m-%d') }}</td> <!-- Format the date if needed -->
+                    <td>{{ log.duration }}</td>
+                    <td>{{ log.stage }}</td>
+                    <td>{{ log.rest_period }}</td>
+                    <td>{{ log.calories_burned }}</td>
+                    <td>{{ log.form_notes }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+
+    <!-- Lunges Log Table -->
+    <div class="table-container" id="lunges-table">
+        <table class="exercise-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Reps</th>
+                    <th>Sets</th>
+                    <th>Duration (sec)</th>
+                    <th>Weight (kg)</th>
+                    <th>Calories Burned</th>
+                    <th>Rest Period (sec)</th>
+                    <th>Stance</th>
+                    <th>Form Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in workout_logs['lunges'] %}
+                <tr>
+                    <td>{{ log.date }}</td>
+                    <td>{{ log.reps }}</td>
+                    <td>{{ log.sets }}</td>
+                    <td>{{ log.duration }}</td>
+                    <td>{{ log.weight }}</td>
+                    <td>{{ log.calories_burned }}</td>
+                    <td>{{ log.rest_period }}</td>
+                    <td>{{ log.stance }}</td>
+                    <td>{{ log.form_notes }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+
+    <!-- Pullups Log Table -->
+    <div class="table-container" id="pullups-table">
+        <table class="exercise-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Reps</th>
+                    <th>Sets</th>
+                    <th>Duration (sec)</th>
+                    <th>Difficulty</th>
+                    <th>Calories Burned</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in workout_logs['pullups'] %}
+                <tr>
+                    <td>{{ log.date }}</td>
+                    <td>{{ log.reps }}</td>
+                    <td>{{ log.sets }}</td>
+                    <td>{{ log.duration }}</td>
+                    <td>{{ log.difficulty }}</td>
+                    <td>{{ log.calories_burned }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="action-buttons">
+        <!-- Start Workout Button -->
+        <button class="start-btn" id="start-workout-btn" onclick="startWorkout()">Start Workout</button>
+        <!-- Logout Button with form to trigger the Flask route -->
+        <form action="{{ url_for('logout') }}" method="POST">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+    
+
+    <script>
+        function showTable(exercise) {
+            const tables = document.querySelectorAll('.table-container');
+            tables.forEach(table => table.style.display = 'none');
+            document.getElementById(`${exercise}-table`).style.display = 'block';
+
+            // Update start workout button to point to the respective exercise
+            document.getElementById('start-workout-btn').onclick = function() {
+                window.location.href = `/start_workout/${exercise}`;
+            };
+        }
+
+        function startWorkout() {
+            alert("Choose exercise first!");
+            document.getElementById('start-workout-btn').onclick = function() {
+                window.location.href = `/start_workout/${exercise}`;
+            };
+        }
+    </script>
+
+</body>
+</html>
